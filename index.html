@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI-Driven Test Automation</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6;
+        }
+        .container {
+            max-width: 1024px;
+        }
+        .card {
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 2.5rem;
+        }
+        .btn-primary {
+            background-color: #4f46e5;
+            color: white;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+        .btn-primary:hover {
+            background-color: #4338ca;
+            transform: translateY(-2px);
+        }
+        .btn-primary:active {
+            transform: translateY(0);
+        }
+        .spinner {
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-top: 4px solid #fff;
+            border-radius: 50%;
+            width: 1.5rem;
+            height: 1.5rem;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen flex items-center justify-center p-4">
+    <div id="app" class="container mx-auto">
+        <div class="card">
+            <h1 class="text-3xl font-bold text-gray-800 mb-2 text-center">AI-Driven Web Test Generation</h1>
+            <p class="text-gray-500 mb-6 text-center">
+                Enter a series of goals for an e-commerce flow, and the AI will generate a robust, self-healing test script.
+            </p>
+            <div class="mb-4">
+                <label for="goals" class="block text-sm font-medium text-gray-700 mb-1">E-commerce Flow Goals (comma-separated)</label>
+                <input type="text" id="goals" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all" placeholder="e.g., search for product, add to cart, proceed to checkout">
+            </div>
+            <div class="mb-4">
+                <label for="targetUrl" class="block text-sm font-medium text-gray-700 mb-1">Target URL</label>
+                <input type="url" id="targetUrl" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all" value="https://example-ecommerce-site.com">
+            </div>
+            <button id="generateBtn" class="w-full btn-primary font-medium py-3 px-4 rounded-lg flex items-center justify-center">
+                <span id="btnText">Generate Script</span>
+                <div id="btnSpinner" class="spinner hidden"></div>
+            </button>
+
+            <div id="scriptOutput" class="mt-8 hidden">
+                <h2 class="text-xl font-semibold text-gray-800 mb-2">Generated Selenium Script</h2>
+                <div class="bg-gray-800 text-white p-4 rounded-lg shadow-inner overflow-x-auto">
+                    <pre><code id="generatedCode"></code></pre>
+                </div>
+                <div class="flex items-center mt-4">
+                    <i class="fa-solid fa-circle-info text-blue-500 mr-2"></i>
+                    <p class="text-sm text-gray-600">This script is a conceptual representation. It demonstrates how an AI-driven system would generate a multi-step test with self-healing capabilities.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('generateBtn').addEventListener('click', async () => {
+            const goalsInput = document.getElementById('goals').value;
+            const targetUrl = document.getElementById('targetUrl').value;
+            const btn = document.getElementById('generateBtn');
+            const btnText = document.getElementById('btnText');
+            const btnSpinner = document.getElementById('btnSpinner');
+            const scriptOutput = document.getElementById('scriptOutput');
+            const generatedCodeBlock = document.getElementById('generatedCode');
+
+            if (!goalsInput) {
+                alert("Please enter at least one goal.");
+                return;
+            }
+
+            // Show loading state
+            btnText.classList.add('hidden');
+            btnSpinner.classList.remove('hidden');
+            btn.disabled = true;
+
+            const goals = goalsInput.split(',').map(goal => goal.trim());
+            const systemPrompt = `Act as an AI-driven web test automation system. You have been trained on a massive dataset of web pages and user behaviors. Your task is to generate a comprehensive, self-healing Selenium test script in Python for a given e-commerce flow. The script should use robust locators (e.g., class, text, relative position) to handle UI changes. The output should be the complete Python code. Do not include any conversational text, just the code.`;
+            const userQuery = `Generate a test script to perform the following actions on the website at ${targetUrl}: ${goals.join(', ')}.`;
+
+            try {
+                // Mock API call to represent the AI script generation process
+                const mockGeneratedScript = await mockApiCall(userQuery);
+
+                generatedCodeBlock.textContent = mockGeneratedScript;
+                scriptOutput.classList.remove('hidden');
+
+            } catch (error) {
+                console.error("Error generating script:", error);
+                generatedCodeBlock.textContent = "Error generating script. Please try again.";
+                scriptOutput.classList.remove('hidden');
+            } finally {
+                // Hide loading state
+                btnText.classList.remove('hidden');
+                btnSpinner.classList.add('hidden');
+                btn.disabled = false;
+            }
+        });
+
+        // This function simulates the AI model's response
+        function mockApiCall(userQuery) {
+            return new Promise(resolve => {
+                const goals = userQuery.split(': ')[1];
+                let script = `
+# This script was autonomously generated by an AI-driven test automation framework.
+# It is designed to be self-healing and robust against UI changes.
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+import time
+
+def run_e_commerce_flow():
+    driver = webdriver.Chrome()
+    driver.maximize_window()
+    driver.get("${document.getElementById('targetUrl').value}")
+
+    wait = WebDriverWait(driver, 10)
+
+    print("Starting e-commerce flow automation...")
+`;
+
+                const goalList = goals.split(',').map(goal => goal.trim());
+                goalList.forEach(goal => {
+                    script += `
+    # --- Goal: ${goal} ---
+    print("Executing goal: ${goal}")
+    try:
+        if "search" in "${goal}":
+            # Self-healing logic for search bar
+            search_input = wait.until(EC.presence_of_element_located((By.XPATH, "//*[contains(translate(@id, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'), 'search') or contains(translate(@name, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'), 'search')]")))
+            search_input.send_keys("Laptop")
+            search_input.submit()
+        elif "add to cart" in "${goal}":
+            # Self-healing logic for "add to cart" button
+            add_to_cart_btn = wait.until(EC.element_to_be_clickable((By.XPATH, "//*[contains(translate(@id, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'), 'addtocart') or contains(translate(@class, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'), 'add-to-cart') or text()='Add to cart']")))
+            add_to_cart_btn.click()
+        elif "checkout" in "${goal}":
+            # Self-healing logic for "proceed to checkout" button
+            checkout_btn = wait.until(EC.element_to_be_clickable((By.XPATH, "//*[contains(translate(@id, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'), 'checkout') or contains(translate(@class, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'), 'checkout') or text()='Proceed to Checkout']")))
+            checkout_btn.click()
+        elif "payment" in "${goal}":
+            # Self-healing logic for payment form and button
+            payment_btn = wait.until(EC.element_to_be_clickable((By.XPATH, "//*[contains(translate(@id, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'), 'pay') or contains(translate(@class, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'), 'payment') or text()='Complete Payment']")))
+            payment_btn.click()
+        # You can add more goals and their corresponding self-healing logic here
+
+        print("Goal '${goal}' completed successfully.")
+        time.sleep(3) # Wait for page to load
+    except Exception as e:
+        print(f"Failed to execute goal '${goal}': {e}")
+        driver.quit()
+        return
+
+`;
+                });
+
+                script += `
+    print("E-commerce flow completed successfully.")
+    driver.quit()
+
+if __name__ == "__main__":
+    run_e_commerce_flow()
+`;
+                // Simulate a delay for the API call
+                setTimeout(() => resolve(script), 1500);
+            });
+        }
+    </script>
+</body>
+</html>
