@@ -1,9 +1,6 @@
 # ARES: Autonomous Resilience & Exploration System 🚀
 **A Multimodal Reinforcement Learning Approach to Self-Healing Mobile UI Testing**
 
-## 🌐 Live Interactive Demo
-[**🔗 Launch ARES AI Dashboard**](https://SDET-Hamad-KMughal.github.io/ARES-Framework/)
-*Use this dashboard to generate autonomous Selenium scripts and visualize the self-healing logic.*
 
 ---
 
